@@ -4,7 +4,7 @@
 //Contract Creation Code   
 PUSH1 0x80       //[0x80]
 PUSH1 0x40       //[0x40,0x80]
-MSTORE           //[]     //Memory 0x40->0x80
+MSTORE           //[]     //Memory 0x40->0x80 
 
 CALLVALUE        //[msg.value]
 DUP1             //[msg.value,msg.value]
@@ -39,7 +39,7 @@ MSTORE          //[]    //memory -> 0x40->0x80
 
 
  //in our contract there is no payable function so we  need to check for msg.value 
-CALLVALUE        //[msg.value]
+CALLVALUE         //[msg.value]      
 DUP1             //[msg.value,msg.value]
 ISZERO           //[msg.value==0, msg.value]
 PUSH1 0x0e        //[0x0e,msg.value==0, msg.value]
@@ -157,7 +157,7 @@ PUSH5 0x6970667358
 INVALID
 SLT
 KECCAK256
-MLOAD
+MLOAD 
 SWAP6
 INVALID
 PUSH25 0x937459724ab2b54de17a11b5567264079222a7fa75a99745b5
