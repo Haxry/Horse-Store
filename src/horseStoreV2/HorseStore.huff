@@ -1,0 +1,94 @@
+
+#include "../../lib/huffmate/src/data-structures/Hashmap.huff"
+
+
+
+
+
+#define function mintHorse() nonpayable returns()
+#define function feedHorse(uint256) nonpayable returns()
+#define function isHappyHorse(uint256) view returns(bool)
+#define function HORSE_HAPPY_IF_FED_WITHIN() view returns(uint256)
+#define function horseIdToFedTimeStamp(uint256) view returns(uint256)
+
+#define constant HORSE_FED_TIMESTAMP_LOCATION = FREE_STORAGE_POINTER()
+#define constant HORSE_HAPPY_IF_FED_WITHIN_CONST = 0x0000000000000000000000000000000000000000000000000000000000015180
+
+#define macro HORSE_HAPPY_FED_WITHIN() = takes(0) returns(0){
+   [HORSE_HAPPY_IF_FED_WITHIN_CONST]  //[1day]
+   0x00 mstore
+   0x20 0x00 return
+
+
+#define macro IS_HAPPY_HORSE() takes(0) returns(0){
+
+    0x04 calldataload //[horseId]
+    [HORSE_FED_TIMESTAMP_LOCATION]  //[storageptr,horseId]
+    LOAD_ELEMENT_FROM_KEYS(0x00)    //[horseFedTimeStamp]
+    timeStamp  //[timestamp,horseFedTimeStamp]
+    dup2 dup2   //[timestamp,horseFedTimeStamp,timestamp,horseFedTimeStamp]
+    sub //[timestamp-horseFedTimeStamp,timestamp,horseFedTimeStamp]
+    [HORSE_HAPPY_IF_FED_WITHIN_CONST]  //[1day,timestamp-horseFedTimeStamp,timestamp,horseFedTimeStamp]
+    gt  // [1day>timestamp-horseFedTimeStamp,timestamp,horseFedTimeStamp]
+    start_return_true jumpi  //[timestamp,horseFedTimeStamp]
+    eq  //[timestamp==horseFedTimeStamp]
+    start_return
+    jump 
+
+
+    start_return_true:
+    0x01           //[0x01,timestamp,horseFedTimeStamp]
+
+
+    start_return:
+    0x00 mstore
+    0x20 0x00 return
+}
+
+#define macro GET_HORSE_FED_TIMESTAMP() = takes(0) returns(0){
+    0x04 calldataload   //[horseId]
+    [HORSE_FED_TIMESTAMP_LOCATION]  //[storageptr,horseId]
+    LOAD_ELEMENT_FROM_KEYS(0x00)    //[horseFedTimeStamp]
+
+    0x00 mstore    //[]  //memory location 0 stores the value
+    0x20 0x00 return
+ }
+
+#define macro FEED_HORSE() = takes(0) returns(0){
+    timestamp   //[timestamp]
+    0x04 calldataload   //[horseId,timeStamp]
+    [HORSE_FED_TIMESTAMP_LOCATION]  //[storageptr,horseId,timeStamp]
+    STORE_ELEMENT_FROM_KEYS(0x00)   //[]
+}
+
+#define macro MAIN() = takes(0) returns(0) {
+    // Your macro implementation here
+
+    0x00       //[0]
+    calldataload   //[calldata]
+    0xe0     //[0xe0,calldata]
+    shr     //[function_selector]
+    dup1 __FUNC_SIG(mintHorse) eq mintHorse jumpi  //[function_selector]
+    dup1    //[function_selector,function_selector]
+    __FUNC_SIG(feedHorse) //[feedhorsesig,function_selector,function_selector]
+    eq         //[feedhorsesig==function_selector,function_selector]
+    feedHorse   //[feeshorseptr,jump_condition,function_selector]
+    jumpi        //[function_selector]
+    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi       //[function_selector]
+    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseHappyFedWithin jumpi
+    
+
+    feedHorse:
+    FEED_HORSE()
+    mintHorse:
+    MINT_HORSE()
+    isHappyHorse:
+    IS_HAPPY_HORSE()
+    horseIdToFedTimeStamp:
+    GET_HORSE_FED_TIMESTAMP()
+    horseHappyFedWithin:
+    HORSE_HAPPY_FED_WITHIN()
+    
+
+}
