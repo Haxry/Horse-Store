@@ -6,8 +6,11 @@ import {Test,console2} from "forge-std/Test.sol";
 import {IHorseStore} from "../../src/horseStoreV1/IHorseStore.sol";
 
 abstract contract Base_TestV1 is Test{
-
+    
+   
     HorseStore public horseStore;
+
+   // bytes yulCode = b'6000600160e01b81350463cdfead2e811460245763e026c01781146039578182fd6042565b60243610156030578182fd5b60043582556042565b81548252602082f35b5050';
 
     function setUp() public virtual {
         horseStore = new HorseStore();
